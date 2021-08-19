@@ -80,37 +80,36 @@ router.post('/register', (req, res, next) => {
 });
 router.post('/insert', (req, res, next) => {
     let user = req.session.user;
-     if (user) {
-         var username = user['username'];
-         res.statusCode = 200;
-         res.setHeader('Content-Type', 'text/plain');
-         var content = '';
-         req.on('data', function (data) {
-             content += data;
+    if (user) {
+        var username = user['username'];
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'text/plain');
+        var content = '';
+        req.on('data', function (data) {
+            content += data;
 
-             var obj = JSON.parse(content);
+            var obj = JSON.parse(content);
 
-             console.log("The UserName is: " + username);
-             console.log("The comment is: " + obj.message);
-             //var conn = pool.getConnection();
-             var comment = obj.message;
-             var sql = "UPDATE users SET comment = ? WHERE username = ?";
-             pool.query(sql,[comment,username], function (error, results, fields) {
-                 if (error) throw error;
-                 console.log("Success!");
-             });
+            console.log("The UserName is: " + username);
+            console.log("The comment is: " + obj.message);
+            //var conn = pool.getConnection();
+            var comment = obj.message;
+            pool.query('INSERT INTO comment (username, comment) VALUES (?,?)',[username,comment], function(error, results, fields){
+                if (error) throw error;
+                console.log("Success!");
+            });
 
-             //pool.end();
-             res.end("Success!");
-         });
+            //pool.end();
+            res.end("Success!");
+        });
 
-     }
+    }
 });
 router.get('/functions.js', (req, res, next) => {
 
 
-        res.writeHead(200, {"Content-Type":"text/javascript"});
-        fs.createReadStream("./functions.js").pipe(res);
+    res.writeHead(200, {"Content-Type":"text/javascript"});
+    fs.createReadStream("./functions.js").pipe(res);
 
 });
 
@@ -121,7 +120,7 @@ router.get('/test', (req, res, next) => {
 
     //var conn = con.getConnection();
 
-    pool.query('SELECT username,comment FROM test.users', function(error, results, fields){
+    pool.query('SELECT * FROM test.comment', function(error, results, fields){
         if(error) throw error;
 
         var comments = JSON.stringify(results);
