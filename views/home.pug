@@ -1,0 +1,15 @@
+extends layout
+
+mixin message(opp, name)
+    if(opp)
+        h1.greeting Logged in as 
+            span=name 
+    else 
+        h1.greeting Thanks for Registering to this App
+
+
+
+block content
+    .dashboard 
+        .user 
+            +message(opp, name)
